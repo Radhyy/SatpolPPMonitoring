@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 type Laporan = {
   id: number;
-  tanggal: Date;
+  tanggal: string;
   shift: string;
   lokasi: string;
   dokumentasi: string;
