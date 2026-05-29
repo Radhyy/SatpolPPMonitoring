@@ -111,7 +111,7 @@ export default function PiketTableClient({ laporanPiket }: { laporanPiket: Lapor
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
-            <div style={{ position: 'relative', width: 'auto', height: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0.5rem' }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%', minWidth: '200px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0.5rem' }}>
                <img src={selectedImage} alt="Bukti Piket" style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: '0.25rem' }} />
             </div>
           </div>
