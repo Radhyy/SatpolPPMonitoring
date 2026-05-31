@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export default async function PiketDashboardPage() {
   const laporanPiket = await prisma.laporanPiket.findMany({
     include: {
-      anggota: true,
+      anggotas: true,
     },
     orderBy: {
       tanggal: 'desc',

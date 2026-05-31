@@ -15,11 +15,10 @@ model Anggota {
 }
 
 model LaporanPiket {
-  id          Int      @id @default(autoincrement())
-  anggotaId   Int
-  anggota     Anggota  @relation(fields: [anggotaId], references: [id])
-  shift       String
-  lokasi      String
+  id          Int       @id @default(autoincrement())
+  anggotas    Anggota[]
+  jam         String
+  lokasiPos   String
   keterangan  String
   dokumentasi String
   tanggal     DateTime @default(now())

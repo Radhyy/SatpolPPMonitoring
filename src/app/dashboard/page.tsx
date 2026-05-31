@@ -23,7 +23,7 @@ export default async function DashboardOverview() {
     prisma.laporanPiket.findMany({
       take: 5,
       orderBy: { tanggal: 'desc' },
-      include: { anggota: true }
+      include: { anggotas: true }
     })
   ]);
 
@@ -137,16 +137,18 @@ export default async function DashboardOverview() {
                 <thead style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                   <tr>
                     <th style={{ padding: '1rem 1.5rem', fontWeight: 600, color: '#475569', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>Petugas</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 600, color: '#475569', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>Shift</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 600, color: '#475569', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>Lokasi</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 600, color: '#475569', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>Jam</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 600, color: '#475569', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>Lokasi Pos</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentPiket.map((piket) => (
                     <tr key={piket.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '1rem 1.5rem', fontWeight: 500, fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{piket.anggota.nama}</td>
-                      <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{piket.shift}</td>
-                      <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{piket.lokasi}</td>
+                      <td style={{ padding: '1rem 1.5rem', fontWeight: 500, fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
+                        {piket.anggotas.map(a => a.nama).join(', ')}
+                      </td>
+                      <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{piket.jam}</td>
+                      <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{piket.lokasiPos}</td>
                     </tr>
                   ))}
                 </tbody>

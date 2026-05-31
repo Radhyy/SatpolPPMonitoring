@@ -90,7 +90,8 @@ export default function KegiatanKejadianForm({ anggotaList }: { anggotaList: Ang
           <label htmlFor="kategori">Kategori Laporan</label>
           <select name="kategori" id="kategori" required className="form-control">
             <option value="">-- Pilih Kategori --</option>
-            <option value="Kegiatan Rutin">Kegiatan Rutin / Penjagaan</option>
+            <option value="Pengamanan">Pengamanan</option>
+            <option value="Pengawalan">Pengawalan</option>
             <option value="Pelanggaran Perda">Pelanggaran Perda</option>
             <option value="Keributan / Gangguan Trantibum">Keributan / Gangguan Trantibum</option>
             <option value="Kejadian Lapangan Khusus">Kejadian Lapangan Khusus</option>

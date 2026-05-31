@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
-import SearchableSelect from '@/components/SearchableSelect';
+import MultiSearchableSelect from '@/components/MultiSearchableSelect';
 
 type Anggota = {
   id: number;
@@ -82,23 +82,32 @@ export default function LaporanForm({ anggotaList }: { anggotaList: Anggota[] })
 
       <form onSubmit={handleSubmit} className="laporan-form">
         <div className="form-group">
-          <label htmlFor="anggotaId">Nama Petugas</label>
-          <SearchableSelect options={anggotaList} name="anggotaId" required />
+          <label htmlFor="anggotaId">Nama Petugas Piket (Regu)</label>
+          <MultiSearchableSelect options={anggotaList} name="anggotaId" required />
         </div>
 
         <div className="form-group">
-          <label htmlFor="shift">Shift / Jam</label>
-          <select name="shift" id="shift" required className="form-control">
-            <option value="">-- Pilih Shift --</option>
-            <option value="Pagi (07:00 - 15:00)">Pagi (07:00 - 15:00)</option>
-            <option value="Sore (15:00 - 23:00)">Sore (15:00 - 23:00)</option>
-            <option value="Malam (23:00 - 07:00)">Malam (23:00 - 07:00)</option>
+          <label htmlFor="jam">Jam</label>
+          <select name="jam" id="jam" required className="form-control">
+            <option value="">-- Pilih Jam --</option>
+            <option value="Pagi (07:30 - 07:30) 24 Jam">Pagi (07:30 - 07:30) 24 Jam</option>
+            <option value="Pagi (07:30 - 16:30)">Pagi (07:30 - 16:30)</option>
+            <option value="Malam (20:00 - 07:00)">Malam (20:00 - 07:00)</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="lokasi">Lokasi Pos</label>
-          <input type="text" name="lokasi" id="lokasi" required className="form-control" placeholder="Contoh: Pos Jaga Utama Balai Kota" />
+          <label htmlFor="lokasiPos">Lokasi Pos</label>
+          <select name="lokasiPos" id="lokasiPos" required className="form-control">
+            <option value="">-- Pilih Lokasi Pos --</option>
+            <option value="Kantor Bupati">Kantor Bupati</option>
+            <option value="Kantor DPRD">Kantor DPRD</option>
+            <option value="Kantor SATPOL PP">Kantor SATPOL PP</option>
+            <option value="Rujab Bupati">Rujab Bupati</option>
+            <option value="Rujab Wakil Bupati">Rujab Wakil Bupati</option>
+            <option value="RSPP BETUN">RSPP BETUN</option>
+            <option value="Rujab SEKDA">Rujab SEKDA</option>
+          </select>
         </div>
 
         <div className="form-group">

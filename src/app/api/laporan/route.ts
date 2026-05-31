@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const anggotaIdStr = formData.get('anggotaId') as string;
-    const shift = formData.get('shift') as string;
-    const lokasi = formData.get('lokasi') as string;
+    const anggotaIdsStr = formData.getAll('anggotaId[]') as string[];
+    const jam = formData.get('jam') as string;
+    const lokasiPos = formData.get('lokasiPos') as string;
     const keterangan = formData.get('keterangan') as string;
     const dokumentasi = formData.get('dokumentasi') as File | null;
 
-    if (!anggotaIdStr || !shift || !lokasi || !keterangan || !dokumentasi) {
+    if (!anggotaIdsStr || anggotaIdsStr.length === 0 || !jam || !lokasiPos || !keterangan || !dokumentasi) {
       return NextResponse.json({ error: 'Semua field harus diisi' }, { status: 400 });
     }
 
@@ -47,9 +47,11 @@ export async function POST(request: Request) {
     // Save to database
     const laporan = await prisma.laporanPiket.create({
       data: {
-        anggotaId: parseInt(anggotaIdStr),
-        shift,
-        lokasi,
+        anggotas: {
+          connect: anggotaIdsStr.map(id => ({ id: parseInt(id) }))
+        },
+        jam,
+        lokasiPos,
         keterangan,
         dokumentasi: dokumentasiUrl,
       },

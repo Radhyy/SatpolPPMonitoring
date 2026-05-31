@@ -20,22 +20,26 @@ export default function KegiatanTableClient({ laporanKejadian }: { laporanKejadi
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
-  const [isDeleting, setIsDeleting] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus laporan kejadian ini?')) return;
-    setIsDeleting(id);
+  const executeDelete = async () => {
+    if (deleteConfirmId === null) return;
+    setIsDeleting(true);
+    setDeleteError(null);
     try {
-      const res = await fetch(`/api/kegiatan-kejadian/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/kegiatan-kejadian/${deleteConfirmId}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         window.location.reload();
       } else {
-        alert('Gagal menghapus laporan');
-        setIsDeleting(null);
+        setDeleteError(data.error || 'Gagal menghapus laporan dari server.');
+        setIsDeleting(false);
       }
     } catch (error) {
-      alert('Terjadi kesalahan saat menghapus laporan');
-      setIsDeleting(null);
+      setDeleteError('Terjadi kesalahan jaringan saat menghapus laporan.');
+      setIsDeleting(false);
     }
   };
 
@@ -149,11 +153,11 @@ export default function KegiatanTableClient({ laporanKejadian }: { laporanKejadi
                         Foto
                       </button>
                       <button 
-                        onClick={() => handleDelete(laporan.id)}
-                        disabled={isDeleting === laporan.id}
-                        style={{ backgroundColor: 'white', border: '1px solid #fee2e2', color: '#ef4444', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', cursor: isDeleting === laporan.id ? 'not-allowed' : 'pointer', fontWeight: 600, fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', whiteSpace: 'nowrap', opacity: isDeleting === laporan.id ? 0.5 : 1 }}
-                        onMouseEnter={(e) => { if (isDeleting !== laporan.id) { e.currentTarget.style.backgroundColor = '#fef2f2'; e.currentTarget.style.borderColor = '#fca5a5'; } }}
-                        onMouseLeave={(e) => { if (isDeleting !== laporan.id) { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.borderColor = '#fee2e2'; } }}
+                        onClick={() => setDeleteConfirmId(laporan.id)}
+                        disabled={isDeleting}
+                        style={{ backgroundColor: 'white', border: '1px solid #fee2e2', color: '#ef4444', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', cursor: isDeleting ? 'not-allowed' : 'pointer', fontWeight: 600, fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', whiteSpace: 'nowrap', opacity: isDeleting ? 0.5 : 1 }}
+                        onMouseEnter={(e) => { if (!isDeleting) { e.currentTarget.style.backgroundColor = '#fef2f2'; e.currentTarget.style.borderColor = '#fca5a5'; } }}
+                        onMouseLeave={(e) => { if (!isDeleting) { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.borderColor = '#fee2e2'; } }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                         Hapus
@@ -186,6 +190,41 @@ export default function KegiatanTableClient({ laporanKejadian }: { laporanKejadi
             </button>
             <div style={{ position: 'relative', width: '100%', height: '100%', minWidth: '200px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0.5rem' }}>
                <img src={`/api/proxy-image?url=${encodeURIComponent(selectedImage)}`} alt="Bukti Kejadian" style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: '0.25rem' }} />
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId !== null && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999, backdropFilter: 'blur(4px)' }} onClick={() => !isDeleting && setDeleteConfirmId(null)}>
+          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '1rem', maxWidth: '400px', width: '90%', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ backgroundColor: '#fee2e2', width: '3rem', height: '3rem', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem', color: '#ef4444' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>Hapus Laporan Kejadian?</h3>
+            <p style={{ color: '#475569', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Apakah Anda yakin ingin menghapus laporan kejadian ini secara permanen? Data yang telah dihapus tidak dapat dikembalikan.
+            </p>
+            {deleteError && (
+              <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', padding: '0.75rem', borderRadius: '0.5rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
+                {deleteError}
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button 
+                onClick={() => setDeleteConfirmId(null)}
+                disabled={isDeleting}
+                style={{ backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#475569', padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontWeight: 600, cursor: isDeleting ? 'not-allowed' : 'pointer' }}
+              >
+                Batal
+              </button>
+              <button 
+                onClick={executeDelete}
+                disabled={isDeleting}
+                style={{ backgroundColor: '#ef4444', border: 'none', color: 'white', padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontWeight: 600, cursor: isDeleting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
+              </button>
             </div>
           </div>
         </div>
